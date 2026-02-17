@@ -30,6 +30,8 @@ public class ProductService {
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         product.setQuantity(dto.getQuantity());
+        // DTO'dan kritik stok seviyesi geldiyse set et, gelmediyse null bırak
+        product.setCriticalStockLevel(dto.getCriticalStockLevel());
         product.setCategory(category);
 
         return productRepository.save(product);
@@ -38,6 +40,11 @@ public class ProductService {
     // READ - Tüm ürünler
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    // DÜŞÜK STOKLU ÜRÜNLER
+    public List<Product> getLowStockProducts() {
+        return productRepository.findLowStockProducts();
     }
 
     // READ - ID'ye göre
@@ -53,6 +60,11 @@ public class ProductService {
         existing.setName(dto.getName());
         existing.setPrice(dto.getPrice());
         existing.setQuantity(dto.getQuantity());
+
+        // Kritik stok seviyesi gönderildiyse güncelle
+        if (dto.getCriticalStockLevel() != null) {
+            existing.setCriticalStockLevel(dto.getCriticalStockLevel());
+        }
 
         if (dto.getCategoryId() != null) {
             Category category = categoryRepository.findById(dto.getCategoryId())

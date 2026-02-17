@@ -25,6 +25,11 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity;
 
+    // Ürün için kritik stok seviyesi (örneğin: 10 adet altı kritik kabul edilsin)
+    // Şimdilik nullable bırakıyoruz; doldurulmazsa iş mantığında 0 gibi ele alabiliriz.
+    @Column
+    private Integer criticalStockLevel;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     @JsonBackReference

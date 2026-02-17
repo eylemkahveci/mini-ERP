@@ -8,5 +8,6 @@ public class ProductDTO {
     private String name;
     private BigDecimal price;
     private Integer quantity;
+    private Integer criticalStockLevel;
     private Long categoryId;
 }

@@ -11,3 +11,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+# JWT ayarları (geliştirme için kısa süre; production'da uzun süre + güçlü secret)
+jwt:
+  secret: MiniErpJwtGizliAnahtarEnAz32KarakterOlmali2024
+  expiration-ms: 86400000
