@@ -4,6 +4,7 @@ import com.minierp.mini_erp.dto.StockMovementRequest;
 import com.minierp.mini_erp.entities.MovementType;
 import com.minierp.mini_erp.entities.Product;
 import com.minierp.mini_erp.entities.StockMovement;
+import com.minierp.mini_erp.exceptions.ResourceNotFoundException;
 import com.minierp.mini_erp.repositories.ProductRepository;
 import com.minierp.mini_erp.repositories.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class StockMovementService {
     @Transactional
     public StockMovement createInMovement(StockMovementRequest request) {
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Ürün bulunamadı: " + request.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı: " + request.getProductId()));
 
         // Stok artır
         int newQuantity = product.getQuantity() + request.getQuantity();
@@ -46,17 +47,17 @@ public class StockMovementService {
     @Transactional
     public StockMovement createOutMovement(StockMovementRequest request) {
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Ürün bulunamadı: " + request.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı: " + request.getProductId()));
 
-        int currentQuantity = product.getQuantity();
-        int newQuantity = currentQuantity - request.getQuantity();
+        int currentStock = product.getQuantity();
+        int requestedAmount = request.getQuantity();
 
-        // Şimdilik basit bir kontrol: eğer stok eksiye düşüyorsa hata fırlat
-        if (newQuantity < 0) {
-            throw new RuntimeException("Yeterli stok yok. Mevcut stok: " + currentQuantity +
-                    ", istenen çıkış: " + request.getQuantity());
+        // Stok yetmiyorsa detaylı hata
+        if (currentStock < requestedAmount) {
+            throw new RuntimeException("Yetersiz stok! Mevcut: " + currentStock + ", İstenen: " + requestedAmount);
         }
 
+        int newQuantity = currentStock - requestedAmount;
         product.setQuantity(newQuantity);
         productRepository.save(product);
 

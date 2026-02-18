@@ -1,6 +1,7 @@
 package com.minierp.mini_erp.services;
 
 import com.minierp.mini_erp.entities.Category;
+import com.minierp.mini_erp.exceptions.ResourceNotFoundException;
 import com.minierp.mini_erp.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -28,7 +29,7 @@ public class CategoryService {
     // READ - ID'ye göre kategori getirme
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Kategori bulunamadı: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Kategori bulunamadı: " + id));
     }
 
     // UPDATE - Kategori güncelleme

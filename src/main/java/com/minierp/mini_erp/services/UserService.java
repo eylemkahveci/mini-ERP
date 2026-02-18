@@ -1,6 +1,7 @@
 package com.minierp.mini_erp.services;
 
 import com.minierp.mini_erp.entities.User;
+import com.minierp.mini_erp.exceptions.ResourceNotFoundException;
 import com.minierp.mini_erp.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class UserService {
     // READ - ID'ye göre
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı: " + id));
     }
 
     // UPDATE

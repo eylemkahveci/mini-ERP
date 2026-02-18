@@ -3,6 +3,7 @@ package com.minierp.mini_erp.services;
 import com.minierp.mini_erp.dto.ProductDTO;
 import com.minierp.mini_erp.entities.Category;
 import com.minierp.mini_erp.entities.Product;
+import com.minierp.mini_erp.exceptions.ResourceNotFoundException;
 import com.minierp.mini_erp.repositories.CategoryRepository;
 import com.minierp.mini_erp.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,12 @@ public class ProductService {
 
     // CREATE
     public Product createProduct(ProductDTO dto) {
+        if (productRepository.existsBySku(dto.getSku()) || productRepository.existsByName(dto.getName())) {
+            throw new RuntimeException("Bu ürün zaten sistemde kayıtlı!");
+        }
+
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Kategori bulunamadı: " + dto.getCategoryId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Kategori bulunamadı: " + dto.getCategoryId()));
 
         Product product = new Product();
         product.setName(dto.getName());
@@ -51,7 +56,7 @@ public class ProductService {
     // READ - ID'ye göre
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ürün bulunamadı: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı: " + id));
     }
 
     // UPDATE

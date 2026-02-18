@@ -10,6 +10,10 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    boolean existsBySku(String sku);
+
+    boolean existsByName(String name);
+
     /**
      * Kritik stok seviyesi tanımlı olup, mevcut miktarı bu seviyenin altında veya eşit olan ürünleri getirir.
      */
