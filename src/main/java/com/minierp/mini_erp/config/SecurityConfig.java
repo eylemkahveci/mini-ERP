@@ -32,27 +32,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/categories/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/products/**")
-                        .hasAnyRole("ADMIN", "DEPO", "MUHASEBE")
-                        .requestMatchers("/api/products/**")
-                        .hasAnyRole("ADMIN", "DEPO")
-                        .requestMatchers("/api/stock/**")
-                        .hasAnyRole("ADMIN", "DEPO")
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex -> ex
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpStatus.FORBIDDEN.value());
-                            response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter()
-                                    .write("{\"mesaj\":\"Bu işlem için yetkiniz bulunmamaktadır!\"}");
-                        })
-                );
+                .authorizeHttpRequests(auth -> {
+                    // Auth endpoint'i herkese açık
+                    auth.requestMatchers("/api/auth/**").permitAll();
+                    // Sonra rol bazlı kurallar
+                    auth.requestMatchers("/api/categories/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("ADMIN", "DEPO", "MUHASEBE");
+                    auth.requestMatchers("/api/products/**").hasAnyRole("ADMIN", "DEPO");
+                    auth.requestMatchers("/api/stock/**").hasAnyRole("ADMIN", "DEPO");
+                    auth.requestMatchers("/api/reports/**").hasAnyRole("ADMIN", "MUHASEBE");
+                    auth.requestMatchers("/api/users/**").hasRole("ADMIN");
+                    auth.anyRequest().authenticated();
+                })
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authenticationProvider(daoAuthenticationProvider());
         return http.build();
