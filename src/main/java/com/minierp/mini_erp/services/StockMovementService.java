@@ -7,6 +7,8 @@ import com.minierp.mini_erp.entities.StockMovement;
 import com.minierp.mini_erp.exceptions.ResourceNotFoundException;
 import com.minierp.mini_erp.repositories.ProductRepository;
 import com.minierp.mini_erp.repositories.StockMovementRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,7 @@ public class StockMovementService {
         movement.setMovementType(MovementType.IN);
         movement.setQuantity(request.getQuantity());
         movement.setDescription(request.getDescription());
+        movement.setCreatedBy(getCurrentUsername());
 
         return stockMovementRepository.save(movement);
     }
@@ -66,6 +69,7 @@ public class StockMovementService {
         movement.setMovementType(MovementType.OUT);
         movement.setQuantity(request.getQuantity());
         movement.setDescription(request.getDescription());
+        movement.setCreatedBy(getCurrentUsername());
 
         return stockMovementRepository.save(movement);
     }
@@ -83,6 +87,14 @@ public class StockMovementService {
     /** Hareket tipine göre (IN veya OUT) listele */
     public List<StockMovement> getMovementsByType(MovementType movementType) {
         return stockMovementRepository.findByMovementTypeOrderByMovementDateDesc(movementType);
+    }
+
+    private String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) {
+            return "SYSTEM";
+        }
+        return auth.getName();
     }
 }
 

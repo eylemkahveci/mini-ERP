@@ -30,6 +30,9 @@ public class StockMovement {
 
     private String description;
 
+    @Column
+    private String createdBy;
+
     @PrePersist
     protected void onCreate() {
         if (movementDate == null) {

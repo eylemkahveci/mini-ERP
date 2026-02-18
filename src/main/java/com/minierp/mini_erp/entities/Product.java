@@ -5,11 +5,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
+@SQLDelete(sql = "UPDATE products SET active = false WHERE p_id = ?")
+@Where(clause = "active = true")
 @Data
 public class Product {
 
@@ -54,4 +58,7 @@ public class Product {
     @JsonBackReference
     @ToString.Exclude   // Lombok toString içinde yazma
     private Category category;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean active = true;
 }
