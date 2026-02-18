@@ -35,6 +35,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     // Auth endpoint'i herkese açık
                     auth.requestMatchers("/api/auth/**").permitAll();
+                    // Swagger UI ve API docs herkese açık (tüm path'leri kapsar)
+                    auth.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", 
+                                         "/swagger-resources/**", "/webjars/**").permitAll();
                     // Sonra rol bazlı kurallar
                     auth.requestMatchers("/api/categories/**").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("ADMIN", "DEPO", "MUHASEBE");

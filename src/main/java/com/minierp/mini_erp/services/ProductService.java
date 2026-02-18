@@ -28,6 +28,7 @@ public class ProductService {
 
         Product product = new Product();
         product.setName(dto.getName());
+        product.setSku(dto.getSku());
         product.setPrice(dto.getPrice());
         product.setQuantity(dto.getQuantity());
         // DTO'dan kritik stok seviyesi geldiyse set et, gelmediyse null bırak
@@ -58,6 +59,7 @@ public class ProductService {
         Product existing = getProductById(id);
 
         existing.setName(dto.getName());
+        existing.setSku(dto.getSku());
         existing.setPrice(dto.getPrice());
         existing.setQuantity(dto.getQuantity());
 

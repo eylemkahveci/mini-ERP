@@ -3,6 +3,7 @@ package com.minierp.mini_erp.controllers;
 import com.minierp.mini_erp.dto.ProductDTO;
 import com.minierp.mini_erp.entities.Product;
 import com.minierp.mini_erp.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class ProductController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDTO dto) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductDTO dto) {
         return ResponseEntity.ok(productService.createProduct(dto));
     }
 
@@ -46,7 +47,7 @@ public class ProductController {
     // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id,
-                                                 @RequestBody ProductDTO dto) {
+                                                 @Valid @RequestBody ProductDTO dto) {
         return ResponseEntity.ok(productService.updateProduct(id, dto));
     }
 

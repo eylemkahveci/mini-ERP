@@ -2,6 +2,7 @@ package com.minierp.mini_erp.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
 
@@ -19,6 +20,10 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
+    @NotBlank
+    @Column(nullable = false, unique = true)
+    private String sku;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -29,6 +34,20 @@ public class Product {
     // Şimdilik nullable bırakıyoruz; doldurulmazsa iş mantığında 0 gibi ele alabiliriz.
     @Column
     private Integer criticalStockLevel;
+
+    @Transient
+    public String getStatus() {
+        int qty = quantity != null ? quantity : 0;
+        int critical = criticalStockLevel != null ? criticalStockLevel : 0;
+
+        if (qty <= 0) {
+            return "TÜKENDİ";
+        }
+        if (qty <= critical) {
+            return "KRİTİK";
+        }
+        return "OK";
+    }
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
