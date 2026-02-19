@@ -42,13 +42,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     // Auth endpoint'i herkese açık
                     auth.requestMatchers("/api/auth/**").permitAll();
+                    // Statik frontend dosyaları herkese açık
+                    auth.requestMatchers("/", "/index.html", "/favicon.ico", "/app/**").permitAll();
                     // Swagger UI ve API docs herkese açık (tüm path'leri kapsar)
                     auth.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                                          "/swagger-resources/**", "/webjars/**").permitAll();
                     // Sonra rol bazlı kurallar
                     auth.requestMatchers("/api/categories/**").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("ADMIN", "DEPO", "MUHASEBE");
-                    auth.requestMatchers("/api/products/**").hasAnyRole("ADMIN", "DEPO");
+                    auth.requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/products/**").hasAnyRole("ADMIN", "MUHASEBE");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN");
                     auth.requestMatchers("/api/stock/**").hasAnyRole("ADMIN", "DEPO");
                     auth.requestMatchers("/api/reports/**").hasAnyRole("ADMIN", "MUHASEBE");
                     auth.requestMatchers("/api/users/**").hasRole("ADMIN");

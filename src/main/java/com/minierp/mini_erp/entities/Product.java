@@ -61,4 +61,14 @@ public class Product {
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;
+
+    @Transient
+    public String getCategoryName() {
+        return category != null ? category.getName() : null;
+    }
+
+    @Transient
+    public Long getCategoryId() {
+        return category != null ? category.getCId() : null;
+    }
 }
